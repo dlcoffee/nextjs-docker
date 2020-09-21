@@ -1,4 +1,6 @@
 .git
+.gitignore
+.next
 *Dockerfile*
-*docker-compose*
+# *docker-compose*
 node_modules
