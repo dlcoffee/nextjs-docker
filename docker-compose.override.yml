@@ -1,0 +1,20 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - 3000:3000
+    volumes:
+      # This is so that changes on the host are picked up in the
+      # container, which helps with developing locally without having
+      # to rebuild the image.
+      - .:/usr/src/app
+      # This is to make sure that we don't mount the host node_modules
+      # into the container, since we want to use the packages that are
+      # installed for the image, not the host os.
+      - container_node_modules:/usr/src/app/node_modules
+
+volumes:
+  container_node_modules:

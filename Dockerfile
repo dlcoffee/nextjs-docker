@@ -1,9 +1,6 @@
 # --- Base ----
 FROM node:14.0.0 AS base
 
-# is the -p necessary?
-# RUN mkdir -p /opt/app
-
 # Change directory so that our commands run inside this new directory
 WORKDIR /usr/src/app
 
@@ -15,7 +12,7 @@ FROM base AS builder
 COPY package*.json /usr/src/app/
 
 # Create another caching layer, since Docker assumes the same command produces the same output
-RUN npm install
+RUN npm ci
 
 
 # --- Development ---
