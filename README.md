@@ -35,6 +35,33 @@ npm install --save express
 
 Will modify the `node_modules` within the container, as well as generate a new `package-lock.json` on your local machine (which you can and should commit to source control).
 
+### How to run tests
+
+For (headless) cypress tests, you can run `docker-compose up cypress`. For interactive tests, there's a bit more setup.
+
+See: [Run Cypress with a single Docker command](https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/) and [Running GUI applications using Docker for Mac](https://sourabhbajaj.com/blog/2017/02/07/gui-applications-docker-mac/)
+
+In short, you should run a command similar to this:
+
+```
+IP=$(ipconfig getifaddr en0)
+
+DISPLAY=$IP:0
+
+docker-compose run --rm \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DISPLAY \
+  --entrypoint npx \
+  cypress \
+  cypress open
+```
+
+You may see a bunch of these errors:
+
+> [235:0923/052010.426649:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+
+but you can safely [ignore](https://github.com/cypress-io/cypress/issues/4925) them.
+
 ## Dockerfile
 
 The `Dockerfile` is set up to use multi stage builds using the "builder" pattern. One stage is to install packages from a certain image, and another stage starts from a smaller image, and pulls the packages in, in order to reduce overall image size for the application.
