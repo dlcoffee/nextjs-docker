@@ -17,6 +17,8 @@
 
 # misc
 .DS_Store
+cypress/screenshots
+cypress/videos
 
 # debug
 npm-debug.log*

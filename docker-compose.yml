@@ -3,6 +3,6 @@ services:
   app:
     build:
       context: .
-      target: dev
+      target: release
     ports:
       - 3000:3000

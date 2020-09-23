@@ -21,6 +21,17 @@ services:
       context: .
       target: dev
     command: npm test
+    volumes:
+      - .:/usr/src/app
+      - container_node_modules:/usr/src/app/node_modules
+
+  cypress:
+    build:
+      context: .
+      target: cypress
+    volumes:
+      - .:/usr/src/app
+      - container_node_modules:/usr/src/app/node_modules
 
 volumes:
   container_node_modules:

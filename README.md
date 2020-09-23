@@ -8,7 +8,7 @@ Run `docker-compose build` to build the image and then `docker-compose up` to ru
 
 The repo is already set up with a `package-lock.json` that was generated from the container. You should not run `npm install` from the host.
 
-For local development, there is a bind-mount configured throught `docker-compose.yml`
+For local development, there is a bind-mount configured through `docker-compose.yml`
 file which will sync code changes to the container.
 
 To build a production image, you will need to specify the `production` yaml file.
@@ -16,6 +16,8 @@ To build a production image, you will need to specify the `production` yaml file
 ```
 docker-compose -f docker-compose.yml -f docker-compose.production.yml build
 ```
+
+**Note:** The `app` service will run with the configuration of the last `docker build` command.
 
 ### How to modify packages:
 
@@ -37,8 +39,14 @@ Will modify the `node_modules` within the container, as well as generate a new `
 
 The `Dockerfile` is set up to use multi stage builds using the "builder" pattern. One stage is to install packages from a certain image, and another stage starts from a smaller image, and pulls the packages in, in order to reduce overall image size for the application.
 
+The current approach is to start from a cypress image base in order to be able to install and run cypress correctly. There is a stage where `npm ci` is run _twice_ in order to generate a `node_modules` folder for local development, which will include `devDependencies`, and another `node_modules` without `devDependencies`, intended for the released image.
+
+Additionally to the cypress base image, the cypress stage will also need to pull in the cypress cache which contains the binary for it to run.
+
 ## docker-compose
 
 The `docker-compose.yml` is using the `override` approach so that the "non-override" yaml is considered the base. By default, the `docker-compose.override.yml` will get applied when you run `docker-compose up` and is alrerady configured for local development.
 
 It is taking advantage of the `Dockerfile`'s multi stage builds for different targets.
+
+For local development, each service has the bind-mount for local code so that changes locally will get reflected in the container and vice-versa. The exception to this is the `node_modules` folder.
